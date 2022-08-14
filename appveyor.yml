@@ -9,5 +9,5 @@ init:
 - sh: if [[ "$OSTYPE" == "linux-gnu"* ]]; then (sudo apt update && sudo apt install -y xorg-dev mesa-common-dev libgl-dev libpulse-dev) fi
 
 build_script:
-- sh: git submodule init && git submodule update && cmake . -DCMAKE_CXX23_EXTENSION_COMPILE_OPTION="-std=gnu++2a" && make
-- cmd: git submodule init && git submodule update && mkdir build && cd build/ && cmake .. && cmake --build .
+- sh: git submodule init && git submodule update && cd ThirdParty/Oneiro/ && git submodule init && git submodule update && cd ../../ && cmake . -DCMAKE_CXX23_EXTENSION_COMPILE_OPTION="-std=gnu++2a" && make
+- cmd: git submodule init && git submodule update && cd ThirdParty/Oneiro/ && git submodule init && git submodule update && cd ../../ && mkdir build && cd build/ && cmake .. && cmake --build .
