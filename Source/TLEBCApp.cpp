@@ -12,6 +12,7 @@
 #include "Oneiro/Renderer/Renderer.hpp"
 #include "Oneiro/Runtime/Engine.hpp"
 #include "Oneiro/VisualNovel/VNCore.hpp"
+#include "Oneiro/Lua/LuaTextBox.hpp"
 #include <filesystem>
 
 namespace TLEBC
@@ -159,9 +160,9 @@ namespace TLEBC
                     if (!save.empty())
                     {
                         const bool isSelected = (mSelectedSave == i);
-                        if (ImGui::Selectable(save.c_str(), isSelected))
+                        if (GuiLayer::Selectable(save.string().c_str(), isSelected))
                         {
-                            const std::string saveFileName = save.replace_extension();
+                            const std::string& saveFileName = save.replace_extension().string();
                             if (!VisualNovel::LoadSave(&mScriptFile, saveFileName))
                                 OE_LOG_WARNING("Failed to load world '" + saveFileName + "'!")
                             mShowSavesMenu = false;
@@ -185,12 +186,12 @@ namespace TLEBC
                         saveFilesFunc(localSaves);
 
                     static uint32_t selected{};
-                    if (GuiLayer::BeginCombo("##", localSaves[selected].c_str()))
+                    if (GuiLayer::BeginCombo("##", localSaves[selected].string().c_str()))
                     {
                         for (uint32_t i{}; i < localSaves.size(); i++)
                         {
                             const bool isSelected = (selected == i);
-                            if (GuiLayer::Selectable(localSaves[i].c_str(), isSelected))
+                            if (GuiLayer::Selectable(localSaves[i].string().c_str(), isSelected))
                                 selected = i;
 
                             if (isSelected)
@@ -399,8 +400,9 @@ namespace TLEBC
                         case VisualNovel::WAIT:
                             title += "Wait | " + std::to_string(instruction.animationSpeed) + " / " + std::string(instruction.target);
                             break;
+                        case VisualNovel::CHANGE_TEXTBOX: title += "Change Text Box | " + instruction.textBox->GetSprite()->GetTexture()->GetData()->Path; break;
                         }
-                        if (ImGui::Selectable(title.c_str(), isSelected))
+                        if (GuiLayer::Selectable(title.c_str(), isSelected))
                         {
                             currentIt = i;
                             uint32_t tempIt{};
@@ -446,9 +448,9 @@ namespace TLEBC
                         }
 
                         if (isSelected)
-                            ImGui::SetItemDefaultFocus();
+                            GuiLayer::SetItemDefaultFocus();
                     }
-                    ImGui::EndListBox();
+                    GuiLayer::EndListBox();
                 }
             }
 
