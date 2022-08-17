@@ -206,6 +206,10 @@ namespace TLEBC
             if (GuiLayer::DragInt("Размер текста", &textHeight, 0.05f, 0, 100))
                 VisualNovel::SetTextSize(0, textHeight);
 
+            static float textSpeed{0.01f};
+            if (GuiLayer::DragFloat("Скорость текста", &textSpeed, 0.0001f, 0.0f, 1.0f))
+                VisualNovel::SetTextSpeed(textSpeed);
+
             if (GuiLayer::BeginListBox("Список сохранений", ImVec2(-FLT_MIN, GuiLayer::GetWindowHeight())))
             {
                 for (uint32_t i{}; i < saves.size(); ++i)
