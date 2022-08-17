@@ -218,9 +218,9 @@ namespace TLEBC
                     if (!save.empty())
                     {
                         const bool isSelected = (mSelectedSave == i);
-                        if (ImGui::Selectable(save.c_str(), isSelected))
+                        if (ImGui::Selectable(save.string().c_str(), isSelected))
                         {
-                            const std::string saveFileName = save.replace_extension();
+                            const std::string saveFileName = save.replace_extension().string();
                             if (!VisualNovel::LoadSave(&mScriptFile, saveFileName))
                                 OE_LOG_WARNING("Failed to load world '" + saveFileName + "'!")
                             mShowSavesMenu = false;
@@ -243,12 +243,12 @@ namespace TLEBC
                         auto localSaves = saves;
                         if (saveFilesFunc)
                             saveFilesFunc(localSaves);
-                        if (GuiLayer::BeginCombo("##", localSaves[selected].c_str()))
+                        if (GuiLayer::BeginCombo("##", localSaves[selected].string().c_str()))
                         {
                             for (uint32_t i{}; i < localSaves.size(); ++i)
                             {
                                 const bool isSelected = (selected == i);
-                                if (GuiLayer::Selectable(localSaves[i].c_str(), isSelected))
+                                if (GuiLayer::Selectable(localSaves[i].string().c_str(), isSelected))
                                     selected = i;
 
                                 if (isSelected)
@@ -274,7 +274,7 @@ namespace TLEBC
                 };
 
             createSavesPopupModal("Перезаписать сохранение", nullptr, [&](auto& selected) {
-                oe::VisualNovel::Save(saves[selected].replace_extension(), saves[selected].filename().replace_extension().string());
+                oe::VisualNovel::Save(saves[selected].replace_extension().string(), saves[selected].filename().replace_extension().string());
             });
 
             createSavesPopupModal("Удалить сохранение", nullptr, [&](auto& selected) {
