@@ -14,9 +14,51 @@
 #include "Oneiro/VisualNovel/VNCore.hpp"
 #include "Oneiro/Lua/LuaTextBox.hpp"
 #include <filesystem>
+#include <algorithm>
 
 namespace TLEBC
 {
+    uint32_t currentPos{};
+    glm::vec2 particlesOffset{0.0f, -0.25f};
+    // clang-format off
+    static const std::vector<glm::vec2> positions = {
+        {0.0f, 0.0f}, // skip
+        {0.0f, 0.5f},
+        {0.025f, 0.525f}, {-0.025f, 0.525f},
+        {0.05f, 0.55f}, {-0.05f, 0.55f},
+
+        {0.07f, 0.6f}, {-0.07f, 0.6f},
+
+        {0.09f, 0.625f}, {-0.09f, 0.625f},
+        {0.11f, 0.625f}, {-0.11f, 0.625f},
+        {0.13f, 0.625f}, {-0.13f, 0.625f},
+        {0.15f, 0.625f}, {-0.15f, 0.625f},
+
+        {0.17f, 0.6f}, {-0.17f, 0.6f},
+        {0.17f, 0.575f}, {-0.17f, 0.575f},
+        {0.17f, 0.55f}, {-0.17f, 0.55f},
+
+        {0.18f, 0.525f}, {-0.18f, 0.525f},
+
+        {0.17f, 0.5f}, {-0.17f, 0.5f},
+        {0.16f, 0.475f}, {-0.16f, 0.475f},
+        {0.15f, 0.45f}, {-0.15f, 0.45f},
+        {0.14f, 0.425f}, {-0.14f, 0.425f},
+        {0.13f, 0.4f}, {-0.13f, 0.4f},
+        {0.12f, 0.375f}, {-0.12f, 0.375f},
+        {0.11f, 0.35f}, {-0.11f, 0.35f},
+        {0.10f, 0.325f}, {-0.10f, 0.325f},
+        {0.09f, 0.3f}, {-0.09f, 0.3f},
+        {0.08f, 0.275f}, {-0.08f, 0.275f},
+        {0.07f, 0.25f}, {-0.07f, 0.25f},
+        {0.055f, 0.225f}, {-0.055f, 0.225f},
+        {0.035f, 0.2f}, {-0.035f, 0.2f},
+        {0.015f, 0.175f}, {-0.015f, 0.175f},
+
+        {0.0f, 0.15f}
+    };
+    // clang-format on
+
     bool Application::OnPreInit()
     {
         using namespace oe;
@@ -29,8 +71,7 @@ namespace TLEBC
             0x0400, 0x052F, // Cyrillic + Cyrillic Supplement
             0x2DE0, 0x2DFF, // Cyrillic Extended-A
             0xA640, 0xA69F, // Cyrillic Extended-B
-            0x2000, 0x206F, // Punctuation
-            0,
+            0x2000, 0x206F, 0,
         };
         io.Fonts->AddFontFromFileTTF("Assets/Fonts/font.ttf", 15.5f, &fontConfig, ranges);
 
@@ -43,6 +84,11 @@ namespace TLEBC
         mScriptFile.LoadFile("Assets/Scripts/config.lua", false);
         mScriptFile.LoadFile("Assets/Scripts/utils.lua", false);
         mScriptFile.LoadFile("Assets/Scripts/main.lua", false);
+
+        auto& style = GuiLayer::GetStyle();
+        style.ScrollbarSize = 12;
+        style.ScrollbarRounding = 12;
+        style.WindowTitleAlign.x = 0.5f;
 
         return true;
     }
@@ -86,27 +132,29 @@ namespace TLEBC
         if (VisualNovel::IsWaiting() && VisualNovel::GetWaitTarget() == "end")
         {
             auto pProps =
-                Core::Root::GetWorld()->GetEntity("ParticleSystem").GetComponent<ParticleSystemComponent>().GetParticleProps("main");
-            if (pProps)
-            {
-                pProps->SizeBegin = 0.0075f;
-                pProps->SizeEnd = 0.0025f;
-                pProps->SizeVariation = 0.01f;
-                pProps->ColorBegin = {1.0f, 0.0f, 0.5f, 1.0f};
-                pProps->ColorEnd = {0.0f, 0.5f, 0.0f, 0.0f};
-                pProps->VelocityVariation = {1.0f, 1.0f};
-                pProps->LifeTime = 5.0f;
-                pProps->RotationAngleBegin = 0.0f;
-                pProps->RotationAngleEnd = 360.0f;
-                pProps->Position = {Core::Random::DiceFloat(-1.0f, 1.0f), Core::Random::DiceFloat(-1.0f, 1.0f)};
-            }
-            else
+                Core::Root::GetWorld()->GetEntity("ParticleSystem").GetComponent<ParticleSystemComponent>().GetParticleProps("main1");
+            if (!pProps)
             {
                 pProps = Core::Root::GetWorld()
                              ->GetEntity("ParticleSystem")
                              .GetComponent<ParticleSystemComponent>()
-                             .CreateParticleProps("main", 50);
+                             .CreateParticleProps("main1", 10);
             }
+            pProps->SizeBegin = 0.0075f;
+            pProps->SizeEnd = 0.0025f;
+            pProps->SizeVariation = 0.015f;
+            pProps->ColorBegin = {1.0f, 0.0f, 0.5f, 1.0f};
+            pProps->ColorEnd = {0.0f, 0.5f, 0.0f, 0.0f};
+            pProps->VelocityVariation = {0.1f, 0.1f};
+            pProps->LifeTime = 1.5f;
+            pProps->RotationAngleBegin = 0.0f;
+            pProps->RotationAngleEnd = 90.0f;
+            pProps->Position = positions[currentPos] + particlesOffset;
+            if (currentPos == positions.size())
+                currentPos = 0;
+            if (currentPos == 0)
+                pProps->LifeTime = 0.0f;
+            currentPos++;
         }
         else
             Core::Root::GetWorld()->GetEntity("ParticleSystem").GetComponent<ParticleSystemComponent>().DestroyParticleProps("main");
@@ -129,7 +177,6 @@ namespace TLEBC
             for (auto& file : path)
                 saves.push_back(file.path());
             std::sort(saves.begin(), saves.end());
-
             for (auto& save : saves)
             {
                 std::string saveFile = save.filename().replace_extension().string();
@@ -139,20 +186,27 @@ namespace TLEBC
                     it++;
             }
 
-            GuiLayer::Begin("Saves (and settings)");
-            if (GuiLayer::Button("Save"))
+            if (std::filesystem::exists(std::filesystem::path("Saves/player_save" + std::to_string(it) + ".oeworld")))
+                it++;
+
+            GuiLayer::Begin("Сохрананения и настройки");
+            if (GuiLayer::Button("Сохранить"))
                 VisualNovel::Save("Saves/" + fileName + std::to_string(it), fileName + std::to_string(it));
-            if (GuiLayer::Button("Rewrite Save") && !saves.empty())
-                GuiLayer::OpenPopup("Rewrite Save");
-            if (GuiLayer::Button("Delete Save") && !saves.empty())
-                GuiLayer::OpenPopup("Delete Save");
+            if (GuiLayer::Button("Перезаписать сохранение") && !saves.empty())
+                GuiLayer::OpenPopup("Перезаписать сохранение");
+            if (GuiLayer::Button("Удалить сохранение") && !saves.empty())
+                GuiLayer::OpenPopup("Удалить сохранение");
 
-            GuiLayer::DragFloat("Auto Skip Time", &mAutoSkipTimer.MaxTime, 0.005f, 0.0f, 5.0f);
+            GuiLayer::DragFloat("Время авто-пропуска", &mAutoSkipTimer.MaxTime, 0.005f, 0.0f, 5.0f);
             static float audioVolume = 0.45f;
-            GuiLayer::DragFloat("Global Audio Volume", &audioVolume, 0.005f, 0.0f, 1.0f);
-            Hazel::Audio::SetGlobalVolume(audioVolume);
+            if (GuiLayer::DragFloat("Глобальная громкость аудио", &audioVolume, 0.005f, 0.0f, 1.0f))
+                Hazel::Audio::SetGlobalVolume(audioVolume);
 
-            if (GuiLayer::BeginListBox("Saves List", ImVec2(-FLT_MIN, GuiLayer::GetWindowHeight())))
+            static int textHeight{40};
+            if (GuiLayer::DragInt("Размер текста", &textHeight, 0.05f, 0, 100))
+                VisualNovel::SetTextSize(0, textHeight);
+
+            if (GuiLayer::BeginListBox("Список сохранений", ImVec2(-FLT_MIN, GuiLayer::GetWindowHeight())))
             {
                 for (uint32_t i{}; i < saves.size(); ++i)
                 {
@@ -160,9 +214,9 @@ namespace TLEBC
                     if (!save.empty())
                     {
                         const bool isSelected = (mSelectedSave == i);
-                        if (GuiLayer::Selectable(save.string().c_str(), isSelected))
+                        if (ImGui::Selectable(save.c_str(), isSelected))
                         {
-                            const std::string& saveFileName = save.replace_extension().string();
+                            const std::string saveFileName = save.replace_extension();
                             if (!VisualNovel::LoadSave(&mScriptFile, saveFileName))
                                 OE_LOG_WARNING("Failed to load world '" + saveFileName + "'!")
                             mShowSavesMenu = false;
@@ -173,66 +227,54 @@ namespace TLEBC
                 GuiLayer::EndListBox();
             }
 
-            static const auto createSavesPopupModal = [&](const std::string& id,
-                                                          const std::function<void(std::vector<std::filesystem::path>&)>& saveFilesFunc,
-                                                          const std::function<void(const std::string& fileName, uint32_t selected)>& okFunc,
-                                                          ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize) {
-                const ImVec2 center = GuiLayer::GetMainViewport()->GetCenter();
-                GuiLayer::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
-                if (GuiLayer::BeginPopupModal(id.c_str(), nullptr, flags))
-                {
-                    auto localSaves = saves;
-                    if (saveFilesFunc)
-                        saveFilesFunc(localSaves);
-
+            static const auto createSavesPopupModal =
+                [&](const std::string& id, const std::function<void(std::vector<std::filesystem::path>&)>& saveFilesFunc,
+                    const std::function<void(uint32_t& selected)>& okFunc,
+                    ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize) {
+                    const ImVec2 center = GuiLayer::GetMainViewport()->GetCenter();
+                    GuiLayer::SetNextWindowPos(center, ImGuiCond_Always, ImVec2(0.5f, 0.5f));
                     static uint32_t selected{};
-                    if (GuiLayer::BeginCombo("##", localSaves[selected].string().c_str()))
+                    if (GuiLayer::BeginPopupModal(id.c_str(), nullptr, flags))
                     {
-                        for (uint32_t i{}; i < localSaves.size(); i++)
+                        auto localSaves = saves;
+                        if (saveFilesFunc)
+                            saveFilesFunc(localSaves);
+                        if (GuiLayer::BeginCombo("##", localSaves[selected].c_str()))
                         {
-                            const bool isSelected = (selected == i);
-                            if (GuiLayer::Selectable(localSaves[i].string().c_str(), isSelected))
-                                selected = i;
+                            for (uint32_t i{}; i < localSaves.size(); ++i)
+                            {
+                                const bool isSelected = (selected == i);
+                                if (GuiLayer::Selectable(localSaves[i].c_str(), isSelected))
+                                    selected = i;
 
-                            if (isSelected)
-                                GuiLayer::SetItemDefaultFocus();
+                                if (isSelected)
+                                    GuiLayer::SetItemDefaultFocus();
+                            }
+                            GuiLayer::EndCombo();
                         }
-                        GuiLayer::EndCombo();
+
+                        GuiLayer::Separator();
+
+                        if (GuiLayer::Button("Ок", ImVec2(120, 0)))
+                        {
+                            if (okFunc)
+                                okFunc(selected);
+                            GuiLayer::CloseCurrentPopup();
+                        }
+                        GuiLayer::SetItemDefaultFocus();
+                        GuiLayer::SameLine();
+                        if (GuiLayer::Button("Отмена", ImVec2(120, 0)))
+                            GuiLayer::CloseCurrentPopup();
+                        GuiLayer::EndPopup();
                     }
+                };
 
-                    GuiLayer::Separator();
+            createSavesPopupModal("Перезаписать сохранение", nullptr, [&](auto& selected) {
+                oe::VisualNovel::Save(saves[selected].replace_extension(), saves[selected].filename().replace_extension().string());
+            });
 
-                    if (GuiLayer::Button("OK", ImVec2(120, 0)))
-                    {
-                        if (okFunc)
-                            okFunc(fileName, selected);
-                        GuiLayer::CloseCurrentPopup();
-                    }
-                    GuiLayer::SetItemDefaultFocus();
-                    GuiLayer::SameLine();
-                    if (GuiLayer::Button("Cancel", ImVec2(120, 0)))
-                        GuiLayer::CloseCurrentPopup();
-                    GuiLayer::EndPopup();
-                }
-            };
-
-            createSavesPopupModal(
-                "Rewrite Save",
-                [](auto& localSaves) {
-                    for (uint32_t i{}; i < localSaves.size(); ++i)
-                    {
-                        std::string saveFile = localSaves[i].filename().replace_extension().string();
-                        saveFile.erase(saveFile.end() - 1);
-                        if (saveFile != "player_save")
-                            localSaves.erase(localSaves.begin() + i);
-                    }
-                },
-                [](const auto& fileName, auto selected) {
-                    oe::VisualNovel::Save("Saves/" + fileName + std::to_string(selected), fileName + std::to_string(selected));
-                });
-
-            createSavesPopupModal("Delete Save", nullptr, [](auto& fileName, auto selected) {
-                std::filesystem::remove(std::filesystem::path("Saves/" + fileName + std::to_string(selected) + ".oeworld"));
+            createSavesPopupModal("Удалить сохранение", nullptr, [&](auto& selected) {
+                std::filesystem::remove(saves[selected]);
             });
 
             GuiLayer::End();
@@ -246,10 +288,10 @@ namespace TLEBC
         {
             using namespace oe::Renderer;
 
-            GuiLayer::Begin("History");
-            GuiLayer::Text("Press 'ESC' to close!");
+            GuiLayer::Begin("История");
+            GuiLayer::Text("Нажмите \"ESC\" чтобы закрыть меню!");
 
-            if (GuiLayer::BeginListBox("HistoryList", ImVec2(-FLT_MIN, GuiLayer::GetWindowHeight() / 1.25f)))
+            if (GuiLayer::BeginListBox("Список истории", ImVec2(-FLT_MIN, GuiLayer::GetWindowHeight() / 1.25f)))
             {
                 const auto currentIt = oe::VisualNovel::GetCurrentIterator();
                 static auto prevIt = currentIt;
@@ -281,10 +323,11 @@ namespace TLEBC
             GuiLayer::Begin("HistoryMenuButton", nullptr,
                             ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground |
                                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize);
-            if (GuiLayer::Button("Open history", ImVec2(100, 40)))
+            if (GuiLayer::Button("Открыть историю", ImVec2(120, 35)))
                 mShowHistoryMenu = true;
-            GuiLayer::SetWindowPos("HistoryMenuButton", ImVec2(0, 0));
             GuiLayer::End();
+
+            GuiLayer::SetWindowPos("HistoryMenuButton", ImVec2(0, 0));
         }
     }
 
@@ -554,18 +597,12 @@ namespace TLEBC
                 case Input::D: mShowDebugInfoMenu = !mShowDebugInfoMenu; return;
                 case Input::S: mShowSavesMenu = !mShowSavesMenu; return;
                 case Input::H: mShowHistoryMenu = !mShowHistoryMenu; return;
-                case Input::J: mAutoNextStep = !mAutoNextStep; return;
-                case Input::ESC: mShowHistoryMenu = false; return;
-                case Input::R: {
-                    mScriptFile.RequireFile("", "Assets/Scripts/resources.lua");
-                    mScriptFile.LoadFile("Assets/Scripts/config.lua", false);
-                    mScriptFile.LoadFile("Assets/Scripts/utils.lua", false);
-                    mScriptFile.LoadFile("Assets/Scripts/main.lua", false);
-                    LoadResources();
-                    Hazel::Audio::Init();
-                    VisualNovel::Init(&mScriptFile);
+                case Input::J: {
+                    mAutoNextStep = !mAutoNextStep;
+                    Runtime::Engine::SetDeltaTimeMultiply(mAutoNextStep ? 5.0f : 1.0f);
                     return;
                 }
+                case Input::ESC: mShowHistoryMenu = false; return;
                 default: return;
                 }
             }

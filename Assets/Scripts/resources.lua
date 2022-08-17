@@ -12,7 +12,7 @@ local MUSIC_DIR <const> = AUDIO_DIR .. "Music/"
 local SFX_DIR <const> = AUDIO_DIR .. "SFX/"
 
 -- DEFINE CHARACTERS
-narrator = oneiro.Character("")
+narrator = oneiro.Character("", vec4(1.0), vec4(1.0, 0.0, 0.0, 1.0))
 ishiki = oneiro.Character("Ишики")
 ayako = oneiro.Character("Аяко")
 shizyka = oneiro.Character("Шизука")
@@ -88,5 +88,5 @@ shizaKill = oneiro.Background(CGS_DIR .. "shiza_kill.png", false)
 start = oneiro.Label("start")
 
 -- DEFINE TEXTBOXES
-textBoxNormal = oneiro.TextBox("Assets/Images/UI/textbox_normal.png", 0.0, 0.0, false, true)
-textBoxBlood = oneiro.TextBox("Assets/Images/UI/textbox_blood.png", 0.0, 0.0, false, false)
+textBoxNormal = oneiro.TextBox("Assets/Images/UI/textbox_normal.png", vec2(), false, true)
+textBoxBlood = oneiro.TextBox("Assets/Images/UI/textbox_blood.png", vec2(), false, false)

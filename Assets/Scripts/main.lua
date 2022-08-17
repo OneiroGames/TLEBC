@@ -215,16 +215,16 @@ function start:main()
 
 	ayako:hide()
 	ayako:show("unhappy1")
-    ayako:move(-0.7, 0.0)
+    ayako:move(vec2(-0.7, 0.0))
     shizyka:show("normal1")
-    shizyka:move(0.4, 0.0)
+    shizyka:move(vec2(0.4, 0.0))
 
 	ayako "Я Аяко."
 	narrator "Она резко изменилась в лице и вместо робкого и тихого голоса слышалась холодный, расчетливый и уверенный голос девушки."
 	narrator "\"Странная она...\""
 	shizyka "Приятно познакомиться. Я Ши..."
 	ayako "Шизука. Я знаю. Ты стала весьма популярной в нашем классе. Пойдем Ишики, а то опоздаем на автобус."
-	ishiki "Да, пожалуй, нам пора, извини Шизука, если тебе по пути, то можешь пойти с нами."
+	ishiki "Да, пожалуй, нам пора, извини Шизука, если тебе по пути, то можешь пойти с нами."	
 	shizyka "А можно?"
 	narrator "Ее голос был уже не таким уверенным как в начале диалога."
 	ishiki "Конечно, Аяко же не против. Да, Аяко?"
@@ -236,9 +236,9 @@ function start:main()
 	shizyka:hide(3.0)
 	scene(street_morning)
 	ayako:show("unhappy1", 3.0)
-    ayako:move(-0.7, 0.0)
+    ayako:move(vec2(-0.7, 0.0))
     shizyka:show("normal1", 3.0)
-    shizyka:move(0.4, 0.0)
+    shizyka:move(vec2(0.4, 0.0))
 	acousticMeditation:play()
 
 	narrator "Мы шли по пустой улице. Шизука ни на шаг не отходила от меня, но постоянно отвлекалась на всякую мелочь. То на падающие листья, то на товары в ларьках, то на облака. Но вот Аяко..."
@@ -255,9 +255,9 @@ function start:main()
 	shizyka:hide(3.0)
 	scene(lakeside_daytime)
 	ayako:show("unhappy1", 3.0)
-    ayako:move(-0.7, 0.0)
+    ayako:move(vec2(-0.7, 0.0))
     shizyka:show("normal1", 3.0)
-    shizyka:move(0.4, 0.0)
+    shizyka:move(vec2(0.4, 0.0))
 
 	narrator "Спустя некоторое время мы пришли в парк."
 	narrator "Прогулявшись вдоль моря, мы присели на лавку, откуда замечательно было видно заходящее солнце. Оно будто бы таяло в воде."
@@ -343,9 +343,9 @@ function start:main()
 	narrator "\"Твою же… голова... раскалывается... где я? Тут темно и сыро...\""
 
 	ayako:show("normal", 3.5)
-	ayako:move(-0.7, 0.0)
+	ayako:move(vec2(-0.7, 0.0))
 	shizyka:show("normal1", 3.5)
-	shizyka:move(0.4, 0.0)
+	shizyka:move(vec2(0.4, 0.0))
 
 	shizaAndAyako "ИШИКИ! Наконец-то ты проснулся!"
 
@@ -368,9 +368,9 @@ function start:main()
 	narrator "Я взял из рук Шизуки телефон и начал копаться в нем. Но ничего не нашел кроме одного видео."
 
 	ayako:show("normal")
-	ayako:move(-0.7, 0.0)
+	ayako:move(vec2(-0.7, 0.0))
 	shizyka:show("normal1")
-	shizyka:move(0.4, 0.0)
+	shizyka:move(vec2(0.4, 0.0))
 
 	narrator "Недолго думая я позвал Аяко и Шизуку и включил видео."
 	noName "Добро пожаловать детишки. Наверное, вы хотите узнать кто я, где вы находитесь и почему именно вы. Я дам вам ответы, но сначала пройдите мою игру."
@@ -395,9 +395,9 @@ function start:main()
 
 	scene(room1, 3.0)
 	ayako:show("normal", 3.0)
-	ayako:move(-0.7, 0.0)
+	ayako:move(vec2(-0.7, 0.0))
 	shizyka:show("normal1", 3.0)
-	shizyka:move(0.4, 0.0)
+	shizyka:move(vec2(0.4, 0.0))
 
 	narrator "Она заметно приободрилась."
 	narrator "\"Хорошо, теперь у нас по плану поиск ключей. Один был в нашей камере. Остальные неизвестно где. Нужно выйти и поискать.\""
@@ -426,9 +426,9 @@ function start:main()
 
 	shizyka:hide(3.0)
 	ayako:show("unhappy1", 3.0)
-	ayako:move(-0.7, 0.0)
+	ayako:move(vec2(-0.7, 0.0))
 	shizyka:show("normal1", 3.0)
-	shizyka:move(0.4, 0.0)
+	shizyka:move(vec2(0.4, 0.0))
 
 	ayako "Да, но мне показалось подозрительным то, что только в этой комнате стоит телевизор с кассетником. Может быть, включим?"
 	ishiki "А вдруг это ловушка?"
@@ -478,9 +478,9 @@ function start:main()
 
 	ayako:hide()
 	ayako:show("cry2")
-	ayako:move(-0.7, 0.0)
+	ayako:move(vec2(-0.7, 0.0))
 	shizyka:show("normal1")
-	shizyka:move(0.4, 0.0)
+	shizyka:move(vec2(0.4, 0.0))
 
 	shizyka "Нет, все хорошо, ты нашла второй ключ, можем и отдохнуть."
 	ishiki "Да, верно, давайте зайдем в ту комнату, где мы проснулись. Аяко, залезай на спину."
@@ -532,7 +532,7 @@ function start:main()
 	shizyka "Ребят, я нашла ключ, но… он привязан. Мне страшно."
 
 	ayako:show("normal", 3.0)
-	ayako:move(-0.7, 0.0)
+	ayako:move(vec2(-0.7, 0.0))
 
 	ayako "Дергай быстрее его и беги к нам."
 	ishiki "Шизука, не стоит..."

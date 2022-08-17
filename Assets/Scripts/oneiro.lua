@@ -25,17 +25,11 @@ function oneiro.Jump:__call(labelName)
 end
 
 oneiro.vn = {}
-oneiro.vn.text = {}
+oneiro.vn.text = { 'offset' }
 oneiro.vn.text.who = {}
 oneiro.vn.text.what = {}
 
-oneiro.vn.text.who.position = { 'x', 'y' }
-oneiro.vn.text.what.position = { 'x', 'y' }
-
-oneiro.vn.text.who.position = { 'x', 'y' }
-oneiro.vn.text.what.position = { 'x', 'y' }
-
-oneiro.vn.text.who.color = { 'r', 'g', 'b', 'a' }
-oneiro.vn.text.what.color = { 'r', 'g', 'b', 'a' }
+oneiro.vn.text.who.size = { 'width', 'height' }
+oneiro.vn.text.what.size = { 'width', 'height' }
 
 return oneiro
